@@ -1,0 +1,30 @@
+name: Main Workflow
+
+on:
+  push:
+    branches-ignore:
+      - master
+  pull_request:
+    branches-ignore:
+      - master
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm ci
+      - uses: wearerequired/lint-action@v1
+        with:
+          eslint: true
+          prettier: true
+  build:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          npm ci
+          npm run build

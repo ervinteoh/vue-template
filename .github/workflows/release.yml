@@ -1,0 +1,42 @@
+name: Release Workflow
+
+on:
+  push:
+    branches: 
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm ci
+      - uses: wearerequired/lint-action@v1
+        with:
+          eslint: true
+          prettier: true
+  build:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          npm ci
+          npm run build
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          npm ci
+          npm run build
+      - uses: JamesIves/github-pages-deploy-action@4.1.7
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: dist # The folder the action should deploy.
