@@ -4,9 +4,11 @@ on:
   push:
     branches-ignore:
       - master
+      - gh-pages
   pull_request:
     branches-ignore:
       - master
+      - gh-pages
 
 jobs:
   lint:
